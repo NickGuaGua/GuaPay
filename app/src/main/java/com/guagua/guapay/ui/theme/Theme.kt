@@ -33,7 +33,6 @@ fun GuaPayTheme(
 
     CompositionLocalProvider(
         LocalWindowSize provides windowSize,
-        LocalColorScheme provides colorScheme
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

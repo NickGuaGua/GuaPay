@@ -5,4 +5,9 @@
     <string name="payments">Payments</string>
     <string name="statements">Statements</string>
     <string name="more">More</string>
+    <string name="my_cards">My Cards</string>
+
+    <!--  Cards  -->
+    <string name="no_cards_description">Add credit, debit ot store cards to make sure payments in apps.</string>
+    <string name="no_cards_cta">Add Your First Card</string>
 </resources>

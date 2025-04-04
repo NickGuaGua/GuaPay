@@ -21,13 +21,26 @@ enum class AppWindowSize {
     }
 }
 
-object Size {
-    val margin: Space = Space(
-        small = 12.dp,
-        compact = 16.dp,
-        medium = 24.dp,
-        large = 32.dp
-    )
+val LocalSpace = staticCompositionLocalOf<AppSpace> { AppSpace.Compact() }
+
+sealed class AppSpace {
+    abstract val margin: Space
+    abstract val radius: Space
+
+    data class Compact(
+        override val margin: Space = Space(
+            small = 8.dp,
+            compact = 12.dp,
+            medium = 16.dp,
+            large = 24.dp
+        ),
+        override val radius: Space = Space(
+            small = 2.dp,
+            compact = 4.dp,
+            medium = 8.dp,
+            large = 12.dp
+        )
+    ) : AppSpace()
 }
 
 data class Space(
