@@ -33,17 +33,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.guagua.guapay.R
 import com.guagua.guapay.ui.common.button.PrimaryButton
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
 import com.guagua.guapay.ui.theme.LocalTypography
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CardsScreen(modifier: Modifier = Modifier) {
+fun CardsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: CardsScreenViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     CardsScreenContent(
         modifier = modifier,
-        state = CardsScreenUiState(emptyList()),
+        state = state,
         onAddCardClick = {}
     )
 }
