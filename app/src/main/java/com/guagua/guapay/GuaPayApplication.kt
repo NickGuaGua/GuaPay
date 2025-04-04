@@ -1,6 +1,7 @@
 package com.guagua.guapay
 
 import android.app.Application
+import com.guagua.data.di.DataModuleProvider
 import com.guagua.guapay.ui.di.UiModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -14,6 +15,7 @@ class GuaPayApplication : Application() {
             modules(
                 listOf(
                     UiModules.viewModelModules,
+                    DataModuleProvider.dataModule,
                 )
             )
         }
