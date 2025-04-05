@@ -9,7 +9,7 @@ internal data class CardEntity(
     @PrimaryKey val id: String,
     val name: String? = null,
     val number: String? = null,
-    val expirationData: String? = null,
+    val expirationDate: String? = null,
     val cvv: String? = null
 ) {
     companion object {
@@ -18,7 +18,7 @@ internal data class CardEntity(
                 id = id ?: return@with null,
                 name = name,
                 number = number,
-                expirationData = expirationData,
+                expirationDate = expirationDate,
                 cvv = cvv
             )
         }

@@ -10,4 +10,7 @@
     <!--  Cards  -->
     <string name="no_cards_description">Add credit, debit ot store cards to make sure payments in apps.</string>
     <string name="no_cards_cta">Add Your First Card</string>
+
+    <string name="card_type_physical">Physical</string>
+    <string name="card_type_virtual">Virtual</string>
 </resources>
