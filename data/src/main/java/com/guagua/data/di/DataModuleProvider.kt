@@ -15,7 +15,7 @@ object DataModuleProvider {
             Room.databaseBuilder(get(), GuaPayDatabase::class.java, "GuaPayDatabase")
                 .build()
         }
-        single { get<GuaPayDatabase>()::cardDao }
+        single { get<GuaPayDatabase>().cardDao() }
 
         singleOf(::CardRemoteDataSource)
         singleOf(::CardLocalDataSource)

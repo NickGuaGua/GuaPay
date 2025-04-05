@@ -14,7 +14,7 @@ class CardRepository(
         return remote.getCards().mapNotNull {
             CardEntity.from(it)
         }.let { entities ->
-            local.upsert(entities)
+            local.update(entities)
             entities.mapNotNull { Card.from(it) }
         }
     }

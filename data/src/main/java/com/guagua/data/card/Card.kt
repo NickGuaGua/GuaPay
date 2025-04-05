@@ -7,14 +7,14 @@ data class Card(
     val id: String,
     val name: String,
     val number: String,
-    val expirationData: String,
+    val expirationDate: String,
     val cvv: String
 ) {
     internal fun toBean() = CardBean(
         id = id,
         name = name,
         number = number,
-        expirationData = expirationData,
+        expirationData = expirationDate,
         cvv = cvv
     )
 
@@ -24,7 +24,7 @@ data class Card(
                 id = id,
                 name = name ?: return@with null,
                 number = number ?: return@with null,
-                expirationData = expirationData ?: return@with null,
+                expirationDate = expirationData ?: return@with null,
                 cvv = cvv ?: return@with null
             )
         }
