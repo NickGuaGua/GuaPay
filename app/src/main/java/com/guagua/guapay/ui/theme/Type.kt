@@ -44,7 +44,7 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Normal
     ),
     titleLarge = TextStyle(
-        fontSize = 22.sp,
+        fontSize = 18.sp,
         lineHeight = 28.sp,
         fontWeight = FontWeight.Medium
     ),

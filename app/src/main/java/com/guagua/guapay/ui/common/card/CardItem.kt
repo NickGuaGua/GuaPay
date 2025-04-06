@@ -61,7 +61,7 @@ fun CardItem(
             .border(1.dp, Color.White.copy(alpha = 0.4f), RoundedCornerShape(20.dp))
             .padding(LocalSpace.current.margin.medium)
     ) {
-        TitleRow(
+        CardTitleRow(
             modifier = Modifier.fillMaxWidth(),
             name = state.name,
             type = state.type,
@@ -92,7 +92,7 @@ fun CardItem(
 }
 
 @Composable
-private fun TitleRow(
+fun CardTitleRow(
     modifier: Modifier = Modifier,
     name: String,
     type: CardType? = null,
@@ -135,7 +135,7 @@ private fun TitleRow(
 }
 
 @Composable
-private fun RippleIndicator(
+fun RippleIndicator(
     color: Color,
     size: Dp,
     shape: Shape = CircleShape,

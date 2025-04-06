@@ -25,6 +25,12 @@ class CardRepository(
         }
     }
 
+    fun getCardFlow(cardId: String): Flow<Card?> {
+        return local.getCardFlow(cardId).map { entity ->
+            entity?.let { Card.from(it) }
+        }
+    }
+
     suspend fun addCard(card: Card) {
         remote.addCard(card.toBean())?.let {
             CardEntity.from(it)?.let {

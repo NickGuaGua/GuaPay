@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icon)
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation(libs.androidx.adaptive.android)
     implementation(libs.androidx.navigation.compose)

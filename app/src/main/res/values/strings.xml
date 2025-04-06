@@ -2,10 +2,14 @@
     <string name="app_name">GuaPay</string>
     <string name="transactions">Transactions</string>
     <string name="cards">Cards</string>
+    <string name="card">Card</string>
     <string name="payments">Payments</string>
     <string name="statements">Statements</string>
     <string name="more">More</string>
     <string name="my_cards">My Cards</string>
+    <string name="card_number">Card Number</string>
+    <string name="expire_date">Exp Date</string>
+    <string name="cvv">CVV</string>
 
     <!--  Cards  -->
     <string name="no_cards_description">Add credit, debit ot store cards to make sure payments in apps.</string>
@@ -13,4 +17,7 @@
 
     <string name="card_type_physical">Physical</string>
     <string name="card_type_virtual">Virtual</string>
+
+    <!--  Card Detail  -->
+    <string name="owner_title">Name on Card</string>
 </resources>

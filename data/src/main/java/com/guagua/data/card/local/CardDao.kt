@@ -24,6 +24,9 @@ internal interface CardDao {
     @Query("SELECT * FROM CardEntity")
     fun getCardsFlow(): Flow<List<CardEntity>>
 
+    @Query("SELECT * FROM CardEntity WHERE id = :cardId")
+    fun getCardFlow(cardId: String): Flow<CardEntity?>
+
     @Query("DELETE FROM CardEntity")
     fun clear()
 }

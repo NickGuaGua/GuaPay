@@ -47,7 +47,7 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
                     tint = Color.White
                 )
                 Text(
-                    text = stringResource(R.string.cards),
+                    text = stringResource(R.string.card),
                     style = LocalTypography.current.bodyLarge,
                     color = LocalColor.current.text.primaryWhite
                 )

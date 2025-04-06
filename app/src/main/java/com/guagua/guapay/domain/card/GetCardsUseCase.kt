@@ -10,6 +10,8 @@ class GetCardsUseCase(
 ) {
     fun flow() = cardRepository.getCardsFlow()
 
+    fun flow(cardId: String) = cardRepository.getCardFlow(cardId)
+
     suspend operator fun invoke() = withContext(dispatcher) {
         runCatching {
             cardRepository.getCards()

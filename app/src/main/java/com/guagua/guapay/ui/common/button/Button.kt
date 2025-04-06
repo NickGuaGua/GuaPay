@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,6 +61,22 @@ fun ActionBarButton(
             .padding(paddingValues),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = horizontalArrangement
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun GuaIconButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    content: @Composable () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .clip(CircleShape)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }

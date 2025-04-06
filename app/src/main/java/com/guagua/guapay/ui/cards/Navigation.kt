@@ -1,5 +1,7 @@
 package com.guagua.guapay.ui.cards
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -21,13 +23,17 @@ fun NavController.navigateToCardDetail(id: String) {
     navigate("$CARDS_ROUTE/$id")
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.cardGraph(
+    sharedTransitionScope: SharedTransitionScope,
     navigateToCardDetail: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     composable(CARDS_ROUTE) {
         CardsScreen(
             modifier = Modifier.fillMaxWidth(),
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = this,
             onNavigate = { cardId ->
                 navigateToCardDetail(cardId)
             }
@@ -40,6 +46,8 @@ fun NavGraphBuilder.cardGraph(
     ) {
         CardDetailScreen(
             modifier = Modifier.fillMaxWidth(),
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = this,
             onBack = onBack
         )
     }

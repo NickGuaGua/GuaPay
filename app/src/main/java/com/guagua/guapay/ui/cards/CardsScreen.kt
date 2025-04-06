@@ -1,7 +1,11 @@
 package com.guagua.guapay.ui.cards
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -23,17 +27,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,13 +57,14 @@ import com.guagua.guapay.ui.common.card.CardUiState
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
 import com.guagua.guapay.ui.theme.LocalTypography
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
-import kotlin.math.min
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CardsScreen(
     modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     viewModel: CardsScreenViewModel = koinViewModel(),
     onNavigate: (String) -> Unit = {}
 ) {
@@ -68,6 +72,8 @@ fun CardsScreen(
     CardsScreenContent(
         modifier = modifier,
         state = state,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedContentScope = animatedContentScope,
         onAddCardClick = {},
         onCardClick = { card ->
             onNavigate(card.id)
@@ -75,9 +81,12 @@ fun CardsScreen(
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CardsScreenContent(
     modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     state: CardsScreenUiState,
     onAddCardClick: () -> Unit,
     onCardClick: (CardUiState) -> Unit,
@@ -123,6 +132,8 @@ private fun CardsScreenContent(
             else -> {
                 CardList(
                     modifier = Modifier.weight(1f),
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedContentScope = animatedContentScope,
                     cards = state.cards,
                     onCardClick = onCardClick
                 )
@@ -209,18 +220,19 @@ private fun NoCardsContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun CardList(
     modifier: Modifier = Modifier,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
     cards: List<CardUiState>,
     onCardClick: (CardUiState) -> Unit = {}
 ) {
-    val listState = rememberLazyListState()
-    var latestVisibleItemIndex by remember { mutableStateOf(0) }
-    var selectedIndex by remember { mutableStateOf(-1) }
+    var selected by rememberSaveable { mutableStateOf<String?>(null) }
+
     LazyColumn(
         modifier = modifier,
-        state = listState,
         contentPadding = PaddingValues(
             horizontal = LocalSpace.current.margin.medium,
             vertical = LocalSpace.current.margin.compact
@@ -228,34 +240,40 @@ private fun CardList(
         verticalArrangement = Arrangement.spacedBy(-170.dp)
     ) {
         itemsIndexed(cards, key = { index, item -> item.id }) { index, item ->
-            AnimateListItem(
-                index = index,
-                latestVisibleItemIndex = latestVisibleItemIndex,
-                onLastIndexChange = { latestVisibleItemIndex = it },
-            ) {
-                Column(
-                    modifier = Modifier
-                ) {
-                    CardItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateItem(),
-                        state = item,
-                        onClick = {
-                            if (selectedIndex != index) {
-                                selectedIndex = index
-                            } else onCardClick(item)
+            AnimateListItem {
+                Column {
+                    with(sharedTransitionScope) {
+                        val contentState = rememberSharedContentState(key = item.id)
+
+                        LaunchedEffect(isTransitionActive) {
+                            if (isTransitionActive.not()) {
+                                selected = null
+                            }
                         }
-                    )
-                    AnimatedVisibility(
-                        visible = selectedIndex == index && index != cards.lastIndex,
-                    ) {
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(170.dp + 16.dp)
-                        )
+
+                        Column(
+                            modifier = Modifier.sharedElement(
+                                contentState,
+                                animatedVisibilityScope = animatedContentScope,
+                            )
+                        ) {
+                            CardItem(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem(),
+                                state = item,
+                                onClick = {
+                                    onCardClick(item)
+                                    selected = item.id
+                                }
+                            )
+                            val margin by animateDpAsState(
+                                if (selected == item.id) 186.dp else 0.dp, tween(300)
+                            )
+                            Spacer(modifier = Modifier.height(margin))
+                        }
                     }
+
                 }
             }
         }
@@ -264,27 +282,12 @@ private fun CardList(
 
 @Composable
 fun AnimateListItem(
-    index: Int,
-    latestVisibleItemIndex: Int,
-    onLastIndexChange: (Int) -> Unit,
     content: @Composable () -> Unit,
 ) {
     val visible = remember { mutableStateOf(false) }
 
-    DisposableEffect(Unit) {
-        onDispose {
-            if (index <= latestVisibleItemIndex) {
-                onLastIndexChange(latestVisibleItemIndex - 1)
-            }
-        }
-    }
-
     LaunchedEffect(Unit) {
-        delay(min((index - latestVisibleItemIndex), 8) * 100L)
         visible.value = true
-        if (index > latestVisibleItemIndex) {
-            onLastIndexChange(index)
-        }
     }
 
     val alpha by animateFloatAsState(if (visible.value) 1f else 0f, tween(500))
@@ -301,13 +304,20 @@ fun AnimateListItem(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview(showBackground = true)
 @Composable
 fun CardsScreenContentPreview() {
-    CardsScreenContent(
-        modifier = Modifier.fillMaxSize(),
-        state = CardsScreenUiState(emptyList()),
-        onAddCardClick = {},
-        onCardClick = {}
-    )
+    SharedTransitionLayout {
+        AnimatedContent(targetState = Unit) { _ ->
+            CardsScreenContent(
+                modifier = Modifier.fillMaxSize(),
+                sharedTransitionScope = this@SharedTransitionLayout,
+                animatedContentScope = this@AnimatedContent,
+                state = CardsScreenUiState(emptyList()),
+                onAddCardClick = {},
+                onCardClick = {}
+            )
+        }
+    }
 }
