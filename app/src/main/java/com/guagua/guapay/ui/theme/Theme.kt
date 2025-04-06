@@ -33,6 +33,7 @@ fun GuaPayTheme(
 
     CompositionLocalProvider(
         LocalWindowSize provides windowSize,
+        LocalColor provides if (darkTheme) AppPalette.Dark() else AppPalette.Light(),
     ) {
         MaterialTheme(
             colorScheme = colorScheme,

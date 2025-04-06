@@ -4,7 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.guagua.guapay.ui.cards.cards
+import com.guagua.guapay.ui.cards.cardGraph
+import com.guagua.guapay.ui.cards.navigateToCardDetail
 import com.guagua.guapay.ui.more.more
 import com.guagua.guapay.ui.payments.payments
 import com.guagua.guapay.ui.statements.statements
@@ -22,7 +23,10 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         transactions()
-        cards()
+        cardGraph(
+            navigateToCardDetail = navController::navigateToCardDetail,
+            onBack = { navController.popBackStack() }
+        )
         payments()
         statements()
         more()

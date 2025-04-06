@@ -14,7 +14,8 @@ class CardRemoteDataSource {
                 expirationDate = "${(it % 12 + 1).toString().padStart(2, '0')}/${
                     (it % 30 + 1).toString().padStart(2, '0')
                 }",
-                cvv = "123"
+                cvv = "123",
+                owner = "Owner $it",
             )
         }
     }

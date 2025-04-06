@@ -1,6 +1,5 @@
 package com.guagua.guapay.ui.cards
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guagua.guapay.domain.card.GetCardsUseCase
@@ -22,7 +21,6 @@ class CardsScreenViewModel(
                 getCardsUseCase.invoke()
             }
             .onEach { cards ->
-                Log.d("QAQ", "cards: $cards")
                 setState {
                     it.copy(cards = cards.map { card ->
                         CardUiState.from(card)

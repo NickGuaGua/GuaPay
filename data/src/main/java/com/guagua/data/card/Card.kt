@@ -9,6 +9,7 @@ data class Card(
     val number: String,
     val expirationDate: String,
     val cvv: String,
+    val owner: String,
     val organization: CardOrganization = CardOrganization.VISA,
     val type: CardType = CardType.PHYSICAL,
 ) {
@@ -17,7 +18,8 @@ data class Card(
         name = name,
         number = number,
         expirationDate = this@Card.expirationDate,
-        cvv = cvv
+        cvv = cvv,
+        owner = owner
     )
 
     companion object {
@@ -28,6 +30,7 @@ data class Card(
                 number = number ?: return@with null,
                 expirationDate = expirationDate ?: return@with null,
                 cvv = cvv ?: return@with null,
+                owner = owner ?: return@with null,
             )
         }
     }

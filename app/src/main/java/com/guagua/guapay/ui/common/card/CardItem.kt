@@ -204,6 +204,7 @@ private fun CardItemPreview() {
             expirationDate = "12/25",
             cvv = "123",
             type = CardType.PHYSICAL,
+            owner = "John Doe",
             organization = CardOrganization.VISA
         )
     )

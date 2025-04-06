@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.guagua.guapay.R
+import com.guagua.guapay.ui.common.appbar.HomeAppBar
 import com.guagua.guapay.ui.common.button.PrimaryButton
 import com.guagua.guapay.ui.common.card.CardItem
 import com.guagua.guapay.ui.common.card.CardUiState
@@ -61,12 +62,16 @@ import kotlin.math.min
 fun CardsScreen(
     modifier: Modifier = Modifier,
     viewModel: CardsScreenViewModel = koinViewModel(),
+    onNavigate: (String) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     CardsScreenContent(
         modifier = modifier,
         state = state,
-        onAddCardClick = {}
+        onAddCardClick = {},
+        onCardClick = { card ->
+            onNavigate(card.id)
+        }
     )
 }
 
@@ -74,12 +79,21 @@ fun CardsScreen(
 private fun CardsScreenContent(
     modifier: Modifier = Modifier,
     state: CardsScreenUiState,
-    onAddCardClick: () -> Unit
+    onAddCardClick: () -> Unit,
+    onCardClick: (CardUiState) -> Unit,
 ) {
     Column(
         modifier = modifier
     ) {
-        Column(modifier = Modifier.padding(horizontal = LocalSpace.current.margin.compact)) {
+        HomeAppBar(
+            modifier = Modifier.fillMaxWidth()
+        )
+        Column(
+            modifier = Modifier.padding(
+                vertical = LocalSpace.current.margin.compact,
+                horizontal = LocalSpace.current.margin.compact
+            )
+        ) {
             Text(
                 modifier = Modifier.padding(LocalSpace.current.margin.small),
                 text = stringResource(R.string.cards),
@@ -99,7 +113,9 @@ private fun CardsScreenContent(
 
             state.cards.isEmpty() -> {
                 NoCardsContent(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(LocalSpace.current.margin.compact),
                     onAddCardClick = onAddCardClick
                 )
             }
@@ -107,7 +123,8 @@ private fun CardsScreenContent(
             else -> {
                 CardList(
                     modifier = Modifier.weight(1f),
-                    cards = state.cards
+                    cards = state.cards,
+                    onCardClick = onCardClick
                 )
             }
         }
@@ -290,6 +307,7 @@ fun CardsScreenContentPreview() {
     CardsScreenContent(
         modifier = Modifier.fillMaxSize(),
         state = CardsScreenUiState(emptyList()),
-        onAddCardClick = {}
+        onAddCardClick = {},
+        onCardClick = {}
     )
 }

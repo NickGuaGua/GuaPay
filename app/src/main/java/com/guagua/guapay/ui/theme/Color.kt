@@ -161,15 +161,15 @@ sealed class AppPalette {
             primaryWhite = Color.Black,
             secondary = AppColor.gray._300
         ),
-        override val primary: Color = AppColor.green._200,
-        override val tertiary: Color = AppColor.orange._300
+        override val primary: Color = AppColor.greenDark._200,
+        override val tertiary: Color = AppColor.orangeDark._300
     ) : AppPalette()
 }
 
 val DarkColorScheme = darkColorScheme(
-    primary = AppColor.green._800,
+    primary = AppColor.greenDark._800,
     onPrimary = Color.White,
-    primaryContainer = AppColor.green._700,
+    primaryContainer = AppColor.greenDark._700,
     onPrimaryContainer = AppColor.green._100,
 
     secondary = AppColor.gray._300,

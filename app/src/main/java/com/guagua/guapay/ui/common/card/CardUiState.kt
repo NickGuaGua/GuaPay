@@ -13,6 +13,7 @@ data class CardUiState(
     val number: String,
     val expirationDate: String,
     val cvv: String,
+    val owner: String,
     val type: CardType,
     val organization: CardOrganization,
 ) {
@@ -26,6 +27,7 @@ data class CardUiState(
                 number = card.number,
                 expirationDate = card.expirationDate,
                 cvv = card.cvv,
+                owner = card.owner,
                 type = card.type,
                 organization = card.organization,
             )
