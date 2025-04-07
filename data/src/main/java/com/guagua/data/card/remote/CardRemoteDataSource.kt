@@ -1,6 +1,7 @@
 package com.guagua.data.card.remote
 
 import kotlinx.coroutines.delay
+import java.util.UUID
 
 class CardRemoteDataSource {
 
@@ -22,6 +23,6 @@ class CardRemoteDataSource {
 
     internal suspend fun addCard(cardBean: CardBean): CardBean? {
         delay(1000)
-        return cardBean
+        return cardBean.copy(id = UUID.randomUUID().toString())
     }
 }

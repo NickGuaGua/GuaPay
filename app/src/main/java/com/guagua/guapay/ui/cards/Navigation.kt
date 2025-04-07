@@ -9,6 +9,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.guagua.guapay.ui.cards.add.AddCardScreen
 import com.guagua.guapay.ui.cards.detail.CardDetailScreen
 
 const val CARDS_ROUTE = "cards"
@@ -23,10 +24,15 @@ fun NavController.navigateToCardDetail(id: String) {
     navigate("$CARDS_ROUTE/$id")
 }
 
+fun NavController.navigateToAddCard() {
+    navigate("$CARDS_ROUTE/add")
+}
+
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.cardGraph(
     sharedTransitionScope: SharedTransitionScope,
     navigateToCardDetail: (String) -> Unit,
+    navigateToAddCard: () -> Unit,
     onBack: () -> Unit,
 ) {
     composable(CARDS_ROUTE) {
@@ -34,9 +40,12 @@ fun NavGraphBuilder.cardGraph(
             modifier = Modifier.fillMaxWidth(),
             sharedTransitionScope = sharedTransitionScope,
             animatedContentScope = this,
-            onNavigate = { cardId ->
+            navigateToCardDetail = { cardId ->
                 navigateToCardDetail(cardId)
-            }
+            },
+            navigateToAddCard = {
+                navigateToAddCard()
+            },
         )
     }
 
@@ -48,6 +57,13 @@ fun NavGraphBuilder.cardGraph(
             modifier = Modifier.fillMaxWidth(),
             sharedTransitionScope = sharedTransitionScope,
             animatedContentScope = this,
+            onBack = onBack
+        )
+    }
+
+    composable("$CARDS_ROUTE/add") {
+        AddCardScreen(
+            modifier = Modifier.fillMaxWidth(),
             onBack = onBack
         )
     }

@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.guagua.guapay.ui.cards.cardGraph
+import com.guagua.guapay.ui.cards.navigateToAddCard
 import com.guagua.guapay.ui.cards.navigateToCardDetail
 import com.guagua.guapay.ui.more.more
 import com.guagua.guapay.ui.payments.payments
@@ -30,6 +31,7 @@ fun AppNavHost(
             cardGraph(
                 sharedTransitionScope = this@SharedTransitionLayout,
                 navigateToCardDetail = navController::navigateToCardDetail,
+                navigateToAddCard = navController::navigateToAddCard,
                 onBack = { navController.popBackStack() }
             )
             payments()

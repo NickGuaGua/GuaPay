@@ -20,4 +20,20 @@
 
     <!--  Card Detail  -->
     <string name="owner_title">Name on Card</string>
+
+    <!--  Add Card  -->
+    <string name="add_card_title">New Card</string>
+    <string name="input_card_name">Card Name</string>
+    <string name="input_card_name_hint">Wei\'s Card</string>
+    <string name="input_card_owner">@string/owner_title</string>
+    <string name="input_card_owner_hint">Wei Chen</string>
+    <string name="input_card_number">Card Number</string>
+    <string name="input_card_number_hint">0000 0000 0000 0000</string>
+    <string name="input_card_expiration_date">@string/expire_date</string>
+    <string name="input_card_expiration_month_hint">Month</string>
+    <string name="input_card_expiration_year_hint">Year</string>
+    <string name="input_card_cvv">Card Security Code</string>
+    <string name="input_card_cvv_hint">Code</string>
+    <string name="add_card">Add Card</string>
+
 </resources>
