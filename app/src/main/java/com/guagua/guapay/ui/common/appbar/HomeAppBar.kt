@@ -41,7 +41,7 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
                     tint = Color.White
                 )
                 Icon(
-                    modifier = Modifier,
+                    modifier = Modifier.size(36.dp, 16.dp),
                     painter = painterResource(R.drawable.ic_logo),
                     contentDescription = null,
                     tint = Color.White

@@ -1,11 +1,7 @@
 package com.guagua.guapay.ui.home
 
 import com.guagua.guapay.R
-import com.guagua.guapay.ui.cards.CARDS_ROUTE
-import com.guagua.guapay.ui.more.MORE_ROUTE
-import com.guagua.guapay.ui.payments.PAYMENT_ROUTE
-import com.guagua.guapay.ui.statements.STATEMENTS_ROUTE
-import com.guagua.guapay.ui.transactions.TRANSACTIONS_ROUTE
+import com.guagua.guapay.ui.navigation.Screen
 
 enum class HomeTab {
     Transactions,
@@ -16,11 +12,11 @@ enum class HomeTab {
 }
 
 fun HomeTab.route() = when (this) {
-    HomeTab.Transactions -> TRANSACTIONS_ROUTE
-    HomeTab.Cards -> CARDS_ROUTE
-    HomeTab.Payments -> PAYMENT_ROUTE
-    HomeTab.Statements -> STATEMENTS_ROUTE
-    HomeTab.More -> MORE_ROUTE
+    HomeTab.Transactions -> Screen.Transaction.route
+    HomeTab.Cards -> Screen.Cards.route
+    HomeTab.Payments -> Screen.Payments.route
+    HomeTab.Statements -> Screen.Statements.route
+    HomeTab.More -> Screen.More.route
 }
 
 fun HomeTab.icon(selected: Boolean = false) = when (this) {

@@ -3,12 +3,11 @@ package com.guagua.guapay.ui.navigation
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.guagua.guapay.ui.cards.cardGraph
-import com.guagua.guapay.ui.cards.navigateToAddCard
-import com.guagua.guapay.ui.cards.navigateToCardDetail
 import com.guagua.guapay.ui.more.more
 import com.guagua.guapay.ui.payments.payments
 import com.guagua.guapay.ui.statements.statements
@@ -21,6 +20,7 @@ fun AppNavHost(
     navController: NavHostController,
     startDestination: String
 ) {
+    val throttler = remember { NavigationThrottler() }
     SharedTransitionLayout {
         NavHost(
             modifier = modifier,
@@ -30,9 +30,10 @@ fun AppNavHost(
             transactions()
             cardGraph(
                 sharedTransitionScope = this@SharedTransitionLayout,
-                navigateToCardDetail = navController::navigateToCardDetail,
-                navigateToAddCard = navController::navigateToAddCard,
-                onBack = { navController.popBackStack() }
+                onNavigation = { route ->
+                    navController.safeNavigate(throttler, route)
+                },
+                onBack = { navController.safePopBackStack(throttler) }
             )
             payments()
             statements()

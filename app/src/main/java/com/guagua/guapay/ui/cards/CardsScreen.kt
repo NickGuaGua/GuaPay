@@ -56,6 +56,7 @@ import com.guagua.guapay.ui.common.appbar.HomeAppBar
 import com.guagua.guapay.ui.common.button.PrimaryButton
 import com.guagua.guapay.ui.common.card.CardItem
 import com.guagua.guapay.ui.common.card.CardUiState
+import com.guagua.guapay.ui.navigation.Screen
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
 import com.guagua.guapay.ui.theme.LocalTypography
@@ -68,8 +69,7 @@ fun CardsScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
     viewModel: CardsScreenViewModel = koinViewModel(),
-    navigateToCardDetail: (String) -> Unit = {},
-    navigateToAddCard: () -> Unit = {},
+    onNavigation: (String) -> Unit = {},
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     CardsScreenContent(
@@ -77,9 +77,9 @@ fun CardsScreen(
         state = state,
         sharedTransitionScope = sharedTransitionScope,
         animatedContentScope = animatedContentScope,
-        onAddCardClick = navigateToAddCard,
+        onAddCardClick = { onNavigation(Screen.AddCard.route) },
         onCardClick = { card ->
-            navigateToCardDetail(card.id)
+            onNavigation(Screen.CardDetail.createRoute(card.id))
         }
     )
 }
@@ -112,6 +112,7 @@ private fun CardsScreenContent(
                 style = LocalTypography.current.headlineSmall.copy(
                     fontWeight = FontWeight.Bold
                 ),
+                color = LocalColor.current.text.primaryBlack,
             )
             Spacer(modifier = Modifier.padding(LocalSpace.current.margin.compact))
             CardsCategoryDropDown(modifier = Modifier.fillMaxWidth())
@@ -299,10 +300,15 @@ private fun CardList(
             horizontal = LocalSpace.current.margin.medium,
             vertical = LocalSpace.current.margin.compact
         ),
-        verticalArrangement = Arrangement.spacedBy(-170.dp)
+        verticalArrangement = Arrangement.spacedBy(-130.dp)
     ) {
         itemsIndexed(cards, key = { index, item -> item.id }) { index, item ->
-            AnimateListItem {
+            AnimateListItem(
+                modifier = Modifier.graphicsLayer {
+                    rotationX = -3f
+                    //cameraDistance = 120 * density // 提升立體感
+                }
+            ) {
                 Column {
                     with(sharedTransitionScope) {
                         val contentState = rememberSharedContentState(key = item.id)
@@ -330,7 +336,7 @@ private fun CardList(
                                 }
                             )
                             val margin by animateDpAsState(
-                                if (selected == item.id) 186.dp else 0.dp, tween(300)
+                                if (selected == item.id) 116.dp else 0.dp, tween(300)
                             )
                             Spacer(modifier = Modifier.height(margin))
                         }
@@ -344,6 +350,7 @@ private fun CardList(
 
 @Composable
 private fun AnimateListItem(
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     val visible = remember { mutableStateOf(false) }
@@ -356,7 +363,7 @@ private fun AnimateListItem(
     val offsetY by animateDpAsState(if (visible.value) 0.dp else 20.dp, tween(500))
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .graphicsLayer {
                 this.alpha = alpha
                 this.translationY = offsetY.toPx()

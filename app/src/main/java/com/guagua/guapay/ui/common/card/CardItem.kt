@@ -126,8 +126,8 @@ fun CardTitleRow(
         }
 
         Icon(
-            modifier = Modifier.height(14.dp),
-            painter = painterResource(id = R.drawable.ic_logo_with_name),
+            modifier = Modifier.size(36.dp, 16.dp),
+            painter = painterResource(id = R.drawable.ic_logo),
             contentDescription = "logo",
             tint = Color.White,
         )
