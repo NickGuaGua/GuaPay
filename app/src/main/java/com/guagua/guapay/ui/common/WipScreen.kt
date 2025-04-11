@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.guagua.guapay.ui.common.appbar.HomeAppBar
+import com.guagua.guapay.ui.theme.LocalColor
 
 @Composable
 fun WipScreen(
@@ -23,7 +24,7 @@ fun WipScreen(
                 .weight(1f),
             contentAlignment = Alignment.Center
         ) {
-            Text("Work in progress")
+            Text("Work in progress", color = LocalColor.current.text.primaryBlack)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.guagua.guapay.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
@@ -33,7 +35,7 @@ fun HomeScreen(
     val pagerState = rememberPagerState { HomeTab.entries.size }
     val navController = HomeTab.entries.associateWith { rememberNavController() }
 
-    Column(modifier = modifier) {
+    Column(modifier = modifier.background(LocalColor.current.surface.background)) {
         HorizontalPager(
             modifier = Modifier.weight(1f),
             state = pagerState,
@@ -66,7 +68,7 @@ private fun HomeBottomNavigationBar(
 ) {
     NavigationBar(
         modifier = modifier,
-        containerColor = LocalColor.current.primary,
+        containerColor = LocalColor.current.surface.navigation,
     ) {
         tabs.fastForEachIndexed { i, homeTab ->
             NavigationBarItem(
@@ -84,9 +86,10 @@ private fun HomeBottomNavigationBar(
                     Text(
                         text = stringResource(homeTab.text()),
                         style = LocalTypography.current.labelSmall,
-                        color = LocalColor.current.text.primaryWhite.copy(
+                        color = Color.White.copy(
                             if (selectedIndex == i) 1f else 0.4f
-                        )
+                        ),
+                        textAlign = TextAlign.Center
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(

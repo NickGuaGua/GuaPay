@@ -30,6 +30,33 @@ object AppColor {
         _800 = Color(0xFF464F55),
         _900 = Color(0xFF2E3438),
     )
+
+    val blueGray = Palette(
+        _0 = Color(0xFFF5F7F9),
+        _100 = Color(0xFFDCE3E8),
+        _200 = Color(0xFFC2CDD5),
+        _300 = Color(0xFF9BAAB8),
+        _400 = Color(0xFF547288),
+        _500 = Color(0xFF4B6478),
+        _600 = Color(0xFF3F5567),
+        _700 = Color(0xFF324554),
+        _800 = Color(0xFF263540),
+        _900 = Color(0xFF1A242C),
+    )
+
+    val neutral = Palette(
+        _0 = Color(0xFFFFFFFF),
+        _100 = Color(0xFFF5F5F5),
+        _200 = Color(0xFFEEEEEE),
+        _300 = Color(0xFFE0E0E0),
+        _400 = Color(0xFFBDBDBD),
+        _500 = Color(0xFF737C87),
+        _600 = Color(0xFF42474D),
+        _700 = Color(0xFF34383D),
+        _800 = Color(0xFF1C1E21),
+        _900 = Color(0xFF000000),
+    )
+
     val orange = Palette(
         _0 = Color(0xFFFFF8F4),
         _100 = Color(0xFFFFE0CC),
@@ -82,6 +109,19 @@ object AppColor {
         _900 = gray._0,
     )
 
+    val blueGrayDark = Palette(
+        _0 = blueGray._900,
+        _100 = blueGray._800,
+        _200 = blueGray._700,
+        _300 = blueGray._600,
+        _400 = blueGray._500,
+        _500 = blueGray._400,
+        _600 = blueGray._300,
+        _700 = blueGray._200,
+        _800 = blueGray._100,
+        _900 = blueGray._0,
+    )
+
     val orangeDark = Palette(
         _0 = orange._900,
         _100 = orange._800,
@@ -108,6 +148,19 @@ object AppColor {
         _900 = red._0,
     )
 
+    val neutralDark = Palette(
+        _0 = neutral._900,
+        _100 = neutral._800,
+        _200 = neutral._700,
+        _300 = neutral._600,
+        _400 = neutral._500,
+        _500 = neutral._400,
+        _600 = neutral._300,
+        _700 = neutral._200,
+        _800 = neutral._100,
+        _900 = neutral._0,
+    )
+
     val hintText = Color(0xFFB8B8B8)
     val textInputBorder = Color(0xFFD5D5D5)
 }
@@ -119,9 +172,12 @@ sealed class AppPalette {
     abstract val text: Text
     abstract val primary: Color
     abstract val tertiary: Color
+    abstract val surface: Surface
 
     data class Base(
+        val neutral: Palette,
         val green: Palette,
+        val blueGray: Palette,
         val gray: Palette,
         val orange: Palette,
         val red: Palette
@@ -133,9 +189,18 @@ sealed class AppPalette {
         val secondary: Color
     )
 
+    data class Surface(
+        val background: Color,
+        val content: Color,
+        val navigation: Color,
+        val menu: Color
+    )
+
     data class Light(
         override val base: Base = Base(
+            neutral = AppColor.neutral,
             green = AppColor.green,
+            blueGray = AppColor.blueGray,
             gray = AppColor.gray,
             orange = AppColor.orange,
             red = AppColor.red
@@ -145,13 +210,21 @@ sealed class AppPalette {
             primaryWhite = Color.White,
             secondary = AppColor.hintText
         ),
-        override val primary: Color = AppColor.green._800,
-        override val tertiary: Color = AppColor.orange._400
+        override val primary: Color = AppColor.blueGray._400,
+        override val tertiary: Color = AppColor.orange._600,
+        override val surface: Surface = Surface(
+            background = AppColor.neutral._0,
+            content = AppColor.neutral._0,
+            navigation = AppColor.blueGray._400,
+            menu = AppColor.neutral._0
+        )
     ) : AppPalette()
 
     data class Dark(
         override val base: Base = Base(
+            neutral = AppColor.neutralDark,
             green = AppColor.greenDark,
+            blueGray = AppColor.blueGrayDark,
             gray = AppColor.grayDark,
             orange = AppColor.orangeDark,
             red = AppColor.redDark
@@ -161,8 +234,14 @@ sealed class AppPalette {
             primaryWhite = Color.Black,
             secondary = AppColor.gray._300
         ),
-        override val primary: Color = AppColor.greenDark._200,
-        override val tertiary: Color = AppColor.orangeDark._300
+        override val primary: Color = AppColor.blueGrayDark._600,
+        override val tertiary: Color = AppColor.orangeDark._600,
+        override val surface: Surface = Surface(
+            background = AppColor.neutralDark._0,
+            content = AppColor.neutralDark._100,
+            navigation = AppColor.neutralDark._200,
+            menu = AppColor.neutralDark._300
+        )
     ) : AppPalette()
 }
 

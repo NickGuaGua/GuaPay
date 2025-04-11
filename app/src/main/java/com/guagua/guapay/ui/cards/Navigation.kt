@@ -33,12 +33,8 @@ fun NavGraphBuilder.cardGraph(
     composable(
         Screen.CardDetail.route,
         arguments = listOf(navArgument(NavParam.CardId) { type = NavType.StringType }),
-        enterTransition = {
-            slideInHorizontally { it }
-        },
-        exitTransition = {
-            slideOutHorizontally { it }
-        },
+        enterTransition = { slideInHorizontally { it } },
+        exitTransition = { slideOutHorizontally { it } },
     ) {
         CardDetailScreen(
             modifier = Modifier.fillMaxWidth(),
@@ -48,7 +44,11 @@ fun NavGraphBuilder.cardGraph(
         )
     }
 
-    composable(Screen.AddCard.route) {
+    composable(
+        Screen.AddCard.route,
+        enterTransition = { slideInHorizontally { it } },
+        exitTransition = { slideOutHorizontally { it } },
+    ) {
         AddCardScreen(
             modifier = Modifier.fillMaxWidth(),
             onBack = onBack

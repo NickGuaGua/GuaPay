@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -117,6 +116,7 @@ private fun OwnerRow(
             ),
             text = stringResource(R.string.owner_title),
             style = LocalTypography.current.bodySmall,
+            color = LocalColor.current.text.primaryBlack
         )
         Row(
             modifier = Modifier.padding(
@@ -142,7 +142,7 @@ private fun OwnerRow(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(R.drawable.ic_copy),
                     contentDescription = "copy",
-                    tint = Color.Black.copy(alpha = 0.3f)
+                    tint = LocalColor.current.base.neutral._700
                 )
             }
         }

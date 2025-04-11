@@ -57,9 +57,11 @@ import com.guagua.guapay.ui.common.button.PrimaryButton
 import com.guagua.guapay.ui.common.card.CardItem
 import com.guagua.guapay.ui.common.card.CardUiState
 import com.guagua.guapay.ui.navigation.Screen
+import com.guagua.guapay.ui.theme.AppWindowSize
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
 import com.guagua.guapay.ui.theme.LocalTypography
+import com.guagua.guapay.ui.theme.LocalWindowSize
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -294,19 +296,25 @@ private fun CardList(
 ) {
     var selected by rememberSaveable { mutableStateOf<String?>(null) }
 
+    val cardInterval = when (LocalWindowSize.current) {
+        AppWindowSize.Expand -> 230.dp
+        AppWindowSize.Medium -> 180.dp
+        AppWindowSize.Compact -> 130.dp
+        AppWindowSize.Small -> 80.dp
+    }
+
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(
             horizontal = LocalSpace.current.margin.medium,
             vertical = LocalSpace.current.margin.compact
         ),
-        verticalArrangement = Arrangement.spacedBy(-130.dp)
+        verticalArrangement = Arrangement.spacedBy(-cardInterval)
     ) {
         itemsIndexed(cards, key = { index, item -> item.id }) { index, item ->
             AnimateListItem(
                 modifier = Modifier.graphicsLayer {
                     rotationX = -3f
-                    //cameraDistance = 120 * density // 提升立體感
                 }
             ) {
                 Column {
@@ -336,7 +344,8 @@ private fun CardList(
                                 }
                             )
                             val margin by animateDpAsState(
-                                if (selected == item.id) 116.dp else 0.dp, tween(300)
+                                if (selected == item.id) (cardInterval + LocalSpace.current.margin.compact) else 0.dp,
+                                tween(300)
                             )
                             Spacer(modifier = Modifier.height(margin))
                         }
@@ -374,6 +383,7 @@ private fun AnimateListItem(
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
+@SuppressLint("UnusedContentLambdaTargetStateParameter")
 @Preview(showBackground = true)
 @Composable
 fun CardsScreenContentPreview() {

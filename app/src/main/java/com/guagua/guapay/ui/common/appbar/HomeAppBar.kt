@@ -18,14 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.guagua.guapay.R
 import com.guagua.guapay.ui.common.button.ActionBarButton
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
-import com.guagua.guapay.ui.theme.LocalTypography
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,11 +43,6 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
                     painter = painterResource(R.drawable.ic_logo),
                     contentDescription = null,
                     tint = Color.White
-                )
-                Text(
-                    text = stringResource(R.string.card),
-                    style = LocalTypography.current.bodyLarge,
-                    color = LocalColor.current.text.primaryWhite
                 )
             }
         },
@@ -73,7 +66,7 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = LocalColor.current.primary,
+            containerColor = LocalColor.current.surface.navigation,
         ),
     )
 }

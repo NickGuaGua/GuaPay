@@ -12,9 +12,9 @@ enum class AppWindowSize {
     companion object {
         fun from(width: Dp): AppWindowSize {
             return when {
-                width < 320.dp -> Small
-                width < 600.dp -> Compact
-                width < 840.dp -> Medium
+                width <= 320.dp -> Small
+                width <= 600.dp -> Compact
+                width <= 840.dp -> Medium
                 else -> Expand
             }
         }

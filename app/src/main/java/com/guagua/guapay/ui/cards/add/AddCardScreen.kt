@@ -1,5 +1,6 @@
 package com.guagua.guapay.ui.cards.add
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -99,7 +100,9 @@ private fun AddCardScreenContent(
     onCvvChange: (String) -> Unit = {},
 ) {
     Column(
-        modifier = modifier.statusBarsPadding()
+        modifier = modifier
+            .background(LocalColor.current.surface.background)
+            .statusBarsPadding()
     ) {
         DetailAppBar(title = stringResource(R.string.add_card_title)) {
             onBack()
@@ -155,7 +158,9 @@ private fun AddCardScreenContent(
                 isError = state.cvv.isValid == false,
                 isNecessary = true,
                 keyboardType = KeyboardType.Number,
-                onValueChange = { onCvvChange(it) }
+                onValueChange = {
+                    if (it.length <= 3) onCvvChange(it)
+                }
             )
             Spacer(Modifier.height(32.dp))
             PrimaryButton(
@@ -229,7 +234,7 @@ private fun TextDropdown(
                 .clip(RoundedCornerShape(LocalSpace.current.radius.compact))
                 .border(
                     1.dp,
-                    if (isError) Color.Red else AppColor.textInputBorder,
+                    if (isError) LocalColor.current.base.red._500 else AppColor.textInputBorder,
                     RoundedCornerShape(LocalSpace.current.radius.compact)
                 )
                 .padding(
@@ -303,7 +308,7 @@ private fun TextInput(
                 .clip(RoundedCornerShape(LocalSpace.current.radius.compact))
                 .border(
                     1.dp,
-                    if (isError) Color.Red else AppColor.textInputBorder,
+                    if (isError) LocalColor.current.base.red._500 else AppColor.textInputBorder,
                     RoundedCornerShape(LocalSpace.current.radius.compact)
                 )
                 .padding(

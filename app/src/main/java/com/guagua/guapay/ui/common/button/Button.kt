@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.guagua.guapay.ui.theme.AppPalette
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
 import com.guagua.guapay.ui.theme.LocalTypography
@@ -67,7 +68,11 @@ fun ActionBarButton(
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(LocalSpace.current.radius.compact))
-            .background(LocalColor.current.base.green._700)
+            .background(
+                if (LocalColor.current is AppPalette.Light) {
+                    LocalColor.current.base.blueGray._500
+                } else LocalColor.current.surface.content
+            )
             .clickable { onClick() }
             .padding(paddingValues),
         verticalAlignment = Alignment.CenterVertically,

@@ -34,7 +34,7 @@ class AddCardViewModel(
                     condition = { year -> year.isNotEmpty() }
                 ),
                 cvv = it.cvv.copy(
-                    condition = { cvv -> cvv.isNotEmpty() }
+                    condition = { cvv -> cvv.length == 3 }
                 )
             )
         }

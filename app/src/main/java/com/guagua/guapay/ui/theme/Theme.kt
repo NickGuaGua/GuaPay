@@ -1,6 +1,7 @@
 package com.guagua.guapay.ui.theme
 
 import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicDarkColorScheme
@@ -20,6 +21,7 @@ fun GuaPayTheme(
     content: @Composable () -> Unit
 ) {
     val configuration = LocalConfiguration.current
+    Log.d("QAQ", "GuaPayTheme: ${configuration.screenWidthDp}")
     val windowSize = AppWindowSize.from(configuration.screenWidthDp.dp)
 
     val colorScheme = when {
