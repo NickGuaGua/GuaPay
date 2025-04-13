@@ -3,6 +3,7 @@ package com.guagua.guapay.ui.cards.add
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guagua.data.card.Card
+import com.guagua.data.card.CardTag
 import com.guagua.guapay.domain.card.AddCardUseCase
 import com.guagua.guapay.ui.common.delegate.EventDelegator
 import com.guagua.guapay.ui.common.delegate.EventDelegatorImpl
@@ -26,7 +27,8 @@ class AddCardViewModel(
                     number = state.value.cardNumber.getOrThrow(),
                     expirationDate = state.value.expireMonth.getOrThrow() + "/" + state.value.expireYear.getOrThrow(),
                     cvv = state.value.cvv.getOrThrow(),
-                    owner = state.value.cardOwner.getOrThrow()
+                    owner = state.value.cardOwner.getOrThrow(),
+                    tag = state.value.tag.getOrThrow()
                 )
             }.onSuccess {
                 addCardUseCase.invoke(it)
@@ -41,6 +43,7 @@ class AddCardViewModel(
                         expireMonth = it.expireMonth.validate(),
                         expireYear = it.expireYear.validate(),
                         cvv = it.cvv.validate(),
+                        tag = it.tag.validate(),
                         isLoading = false
                     )
                 }
@@ -109,6 +112,17 @@ class AddCardViewModel(
                 cvv = it.cvv.copy(
                     value = cvv,
                     isValid = it.cvv.condition(cvv)
+                )
+            )
+        }
+    }
+
+    fun setTag(category: CardTag) {
+        setState {
+            it.copy(
+                tag = it.tag.copy(
+                    value = category,
+                    isValid = it.tag.condition(category)
                 )
             )
         }

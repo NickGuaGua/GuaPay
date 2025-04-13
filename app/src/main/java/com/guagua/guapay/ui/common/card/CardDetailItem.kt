@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.guagua.data.card.CardOrganization
+import com.guagua.data.card.CardTag
 import com.guagua.data.card.CardType
 import com.guagua.guapay.R
 import com.guagua.guapay.ui.common.button.GuaIconButton
@@ -47,7 +48,8 @@ fun CardDetailItem(
     ) {
         CardTitleRow(
             modifier = Modifier.fillMaxWidth(),
-            name = state.name
+            name = state.name,
+            tag = state.tag
         )
 
         Spacer(modifier = Modifier.weight(2f))
@@ -171,7 +173,8 @@ private fun CardDetailItemPreview() {
             cvv = "123",
             type = CardType.PHYSICAL,
             owner = "John Doe",
-            organization = CardOrganization.VISA
+            organization = CardOrganization.VISA,
+            tag = CardTag.OTHER
         )
     )
 }

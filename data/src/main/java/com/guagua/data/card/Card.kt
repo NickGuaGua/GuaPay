@@ -12,6 +12,7 @@ data class Card(
     val owner: String,
     val organization: CardOrganization = CardOrganization.VISA,
     val type: CardType = CardType.PHYSICAL,
+    val tag: CardTag = CardTag.OTHER,
 ) {
     internal fun toBean() = CardBean(
         id = id,
@@ -19,7 +20,8 @@ data class Card(
         number = number,
         expirationDate = this@Card.expirationDate,
         cvv = cvv,
-        owner = owner
+        owner = owner,
+        tag = tag.name
     )
 
     companion object {
@@ -31,6 +33,7 @@ data class Card(
                 expirationDate = expirationDate ?: return@with null,
                 cvv = cvv ?: return@with null,
                 owner = owner ?: return@with null,
+                tag = tag?.let { CardTag.from(it) } ?: CardTag.OTHER,
             )
         }
     }
@@ -52,5 +55,20 @@ enum class CardOrganization {
 
     companion object {
         fun from(value: String) = values().find { it.name == value } ?: UNKNOWN
+    }
+}
+
+enum class CardTag {
+    FOOD,
+    TRANSPORT,
+    SHOPPING,
+    ENTERTAINMENT,
+    TRAVEL,
+    HEALTH,
+    EDUCATION,
+    OTHER;
+
+    companion object {
+        fun from(value: String) = entries.find { it.name == value } ?: OTHER
     }
 }

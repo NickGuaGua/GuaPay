@@ -1,5 +1,6 @@
 package com.guagua.data.card.remote
 
+import com.guagua.data.card.CardTag
 import kotlinx.coroutines.delay
 import java.util.UUID
 
@@ -17,6 +18,7 @@ class CardRemoteDataSource {
                 }",
                 cvv = "123",
                 owner = "Owner $it",
+                tag = CardTag.entries.random().name
             )
         }
     }

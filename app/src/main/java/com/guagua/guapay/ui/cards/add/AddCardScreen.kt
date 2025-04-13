@@ -43,10 +43,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.guagua.data.card.CardTag
 import com.guagua.guapay.R
 import com.guagua.guapay.ui.common.appbar.DetailAppBar
 import com.guagua.guapay.ui.common.appbar.NavigationType
 import com.guagua.guapay.ui.common.button.PrimaryButton
+import com.guagua.guapay.ui.common.extension.text
 import com.guagua.guapay.ui.theme.AppColor
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
@@ -85,7 +87,8 @@ fun AddCardScreen(
         viewModel::setCardNumber,
         viewModel::setExpireMonth,
         viewModel::setExpireYear,
-        viewModel::setCvv
+        viewModel::setCvv,
+        viewModel::setTag
     )
 }
 
@@ -102,6 +105,7 @@ private fun AddCardScreenContent(
     onExpireMonthChange: (String) -> Unit = {},
     onExpireYearChange: (String) -> Unit = {},
     onCvvChange: (String) -> Unit = {},
+    onTagChange: (CardTag) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -171,6 +175,11 @@ private fun AddCardScreenContent(
                     if (it.length <= 3) onCvvChange(it)
                 }
             )
+            CardTagRow(
+                modifier = Modifier.fillMaxWidth(),
+                tag = state.tag.value,
+                onTagChange = { onTagChange(it) }
+            )
             Spacer(Modifier.height(32.dp))
             PrimaryButton(
                 modifier = Modifier.fillMaxWidth(),
@@ -221,6 +230,32 @@ fun ExpireDateRow(
                 onSelect = onYearSelected
             )
         }
+    }
+}
+
+@Composable
+fun CardTagRow(
+    modifier: Modifier = Modifier,
+    tag: CardTag,
+    onTagChange: (CardTag) -> Unit = {},
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = stringResource(R.string.input_card_expiration_date) + "*",
+            style = LocalTypography.current.titleSmall,
+            color = LocalColor.current.text.primaryBlack,
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        TextDropdown(
+            modifier = Modifier.fillMaxWidth(),
+            selected = tag.text(),
+            hint = "",
+            options = CardTag.entries.map { it.text() },
+            isError = false,
+            onSelect = { onTagChange(CardTag.from(it)) }
+        )
     }
 }
 

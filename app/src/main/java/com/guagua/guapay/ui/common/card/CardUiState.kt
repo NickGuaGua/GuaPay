@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.guagua.data.card.Card
 import com.guagua.data.card.CardOrganization
+import com.guagua.data.card.CardTag
 import com.guagua.data.card.CardType
 import com.guagua.guapay.R
 
@@ -16,6 +17,7 @@ data class CardUiState(
     val owner: String,
     val type: CardType,
     val organization: CardOrganization,
+    val tag: CardTag
 ) {
     val last4Digits: String = number.takeLast(4)
 
@@ -30,6 +32,7 @@ data class CardUiState(
                 owner = card.owner,
                 type = card.type,
                 organization = card.organization,
+                tag = card.tag
             )
         }
     }

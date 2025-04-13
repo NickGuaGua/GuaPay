@@ -15,6 +15,8 @@ import com.guagua.guapay.ui.cards.add.AddCardScreen
 import com.guagua.guapay.ui.cards.detail.CardDetailScreen
 import com.guagua.guapay.ui.navigation.NavParam
 import com.guagua.guapay.ui.navigation.Screen
+import com.guagua.guapay.ui.theme.AppWindowSize
+import com.guagua.guapay.ui.theme.LocalWindowSize
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 fun NavGraphBuilder.cardGraph(
@@ -23,12 +25,25 @@ fun NavGraphBuilder.cardGraph(
     onBack: () -> Unit,
 ) {
     composable(Screen.Cards.route) {
-        CardsScreen(
-            modifier = Modifier.fillMaxSize(),
-            sharedTransitionScope = sharedTransitionScope,
-            animatedContentScope = this,
-            onNavigation = onNavigation
-        )
+        val windowSize = LocalWindowSize.current
+
+        if (windowSize.ordinal >= AppWindowSize.Medium.ordinal) {
+            CardsTabletScreen(
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            CardsScreen(
+                modifier = Modifier.fillMaxSize(),
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = this,
+                navigateToAddCard = {
+                    onNavigation(Screen.AddCard.route)
+                },
+                navigateToCardDetail = {
+                    onNavigation(Screen.CardDetail.createRoute(it))
+                }
+            )
+        }
     }
 
     composable(

@@ -26,7 +26,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -50,14 +53,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.guagua.data.card.CardTag
 import com.guagua.guapay.R
 import com.guagua.guapay.ui.common.appbar.HomeAppBar
 import com.guagua.guapay.ui.common.button.PrimaryButton
 import com.guagua.guapay.ui.common.card.CardItem
 import com.guagua.guapay.ui.common.card.CardUiState
+import com.guagua.guapay.ui.common.extension.color
 import com.guagua.guapay.ui.common.extension.fadeIn
 import com.guagua.guapay.ui.common.extension.safeLet
-import com.guagua.guapay.ui.navigation.Screen
+import com.guagua.guapay.ui.common.extension.text
 import com.guagua.guapay.ui.theme.AppWindowSize
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
@@ -69,31 +74,25 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CardsScreen(
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     viewModel: CardsScreenViewModel = koinViewModel(),
-    onNavigation: (String) -> Unit = {},
+    navigateToAddCard: () -> Unit,
+    navigateToCardDetail: (String) -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val windowSize = LocalWindowSize.current
 
-    if (windowSize.ordinal >= AppWindowSize.Medium.ordinal) {
-        CardsTabletContent(
-            modifier = modifier,
-            state = state
-        )
-    } else {
-        CardsScreenContent(
-            modifier = modifier,
-            state = state,
-            sharedTransitionScope = sharedTransitionScope,
-            animatedContentScope = animatedContentScope,
-            onAddCardClick = { onNavigation(Screen.AddCard.route) },
-            onCardClick = { card ->
-                onNavigation(Screen.CardDetail.createRoute(card.id))
-            }
-        )
-    }
+    CardsScreenContent(
+        modifier = modifier,
+        state = state,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedContentScope = animatedContentScope,
+        onAddCardClick = navigateToAddCard,
+        onCardClick = { card ->
+            navigateToCardDetail(card.id)
+        },
+        onCardTagSelect = viewModel::onTagSelected
+    )
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -105,7 +104,9 @@ fun CardsScreenContent(
     state: CardsScreenUiState,
     onAddCardClick: () -> Unit,
     onCardClick: (CardUiState) -> Unit,
+    onCardTagSelect: (CardTag) -> Unit
 ) {
+    val listState = rememberLazyListState()
     Column(
         modifier = modifier
     ) {
@@ -127,7 +128,15 @@ fun CardsScreenContent(
                 color = LocalColor.current.text.primaryBlack,
             )
             Spacer(modifier = Modifier.padding(LocalSpace.current.margin.compact))
-            CardsCategoryDropDown(modifier = Modifier.fillMaxWidth())
+            CardsTagDropDown(
+                modifier = Modifier.fillMaxWidth(),
+                tags = state.tags,
+                selected = state.selectedTag,
+                onSelect = {
+                    onCardTagSelect(it)
+                    listState.requestScrollToItem(0)
+                }
+            )
             Spacer(modifier = Modifier.padding(LocalSpace.current.margin.small))
         }
 
@@ -150,6 +159,7 @@ fun CardsScreenContent(
                     modifier = Modifier.weight(1f),
                     sharedTransitionScope = sharedTransitionScope,
                     animatedContentScope = animatedContentScope,
+                    listState = listState,
                     cards = state.cards,
                     onCardClick = onCardClick,
                     onAddCardClick = onAddCardClick
@@ -161,7 +171,12 @@ fun CardsScreenContent(
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-private fun CardsCategoryDropDown(modifier: Modifier = Modifier) {
+private fun CardsTagDropDown(
+    modifier: Modifier = Modifier,
+    tags: List<CardTag> = emptyList(),
+    selected: CardTag = CardTag.OTHER,
+    onSelect: (CardTag) -> Unit = {}
+) {
     var expanded by remember { mutableStateOf(false) }
     BoxWithConstraints(modifier = modifier) {
         Row(
@@ -173,10 +188,16 @@ private fun CardsCategoryDropDown(modifier: Modifier = Modifier) {
                 .padding(
                     horizontal = LocalSpace.current.margin.medium,
                     vertical = LocalSpace.current.margin.compact
-                )
+                ),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
+            Spacer(modifier = Modifier
+                .size(8.dp)
+                .clip(CircleShape)
+                .background(selected.color()))
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = stringResource(R.string.my_cards),
+                text = selected.text(),
                 style = LocalTypography.current.titleSmall,
                 color = LocalColor.current.text.primaryBlack,
             )
@@ -187,15 +208,27 @@ private fun CardsCategoryDropDown(modifier: Modifier = Modifier) {
             containerColor = LocalColor.current.base.gray._100,
             onDismissRequest = { expanded = false }
         ) {
-            DropdownMenuItem(
-                modifier = Modifier,
-                text = { Text("Option 1") },
-                onClick = { /* Do something... */ }
-            )
-            DropdownMenuItem(
-                text = { Text("Option 2") },
-                onClick = { /* Do something... */ }
-            )
+            tags.forEach {
+                DropdownMenuItem(
+                    modifier = Modifier,
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Spacer(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(it.color())
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(it.text())
+                        }
+                    },
+                    onClick = {
+                        expanded = false
+                        onSelect(it)
+                    }
+                )
+            }
         }
     }
 }
@@ -243,6 +276,7 @@ fun CardsContent(
     modifier: Modifier = Modifier,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedContentScope: AnimatedContentScope? = null,
+    listState: LazyListState = rememberLazyListState(),
     cards: List<CardUiState>,
     onCardClick: (CardUiState) -> Unit = {},
     onAddCardClick: () -> Unit = {}
@@ -252,6 +286,7 @@ fun CardsContent(
             modifier = Modifier.fillMaxSize(),
             sharedTransitionScope = sharedTransitionScope,
             animatedContentScope = animatedContentScope,
+            listState = listState,
             cards = cards,
             onCardClick = onCardClick
         )
@@ -301,6 +336,7 @@ private fun CardList(
     modifier: Modifier = Modifier,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedContentScope: AnimatedContentScope? = null,
+    listState: LazyListState = rememberLazyListState(),
     cards: List<CardUiState>,
     onCardClick: (CardUiState) -> Unit = {}
 ) {
@@ -315,6 +351,7 @@ private fun CardList(
 
     LazyColumn(
         modifier = modifier,
+        state = listState,
         contentPadding = PaddingValues(
             horizontal = LocalSpace.current.margin.medium,
             vertical = LocalSpace.current.margin.compact
@@ -364,50 +401,6 @@ private fun CardList(
                     onClick = { onCardClick(item) }
                 )
             }
-
-
-//            AnimateListItem(
-//                modifier = Modifier.graphicsLayer {
-//                    rotationX = -3f
-//                }
-//            ) {
-//                Column {
-////                    safeLet(sharedTransitionScope, animatedContentScope) { shareScope, animateScope ->
-//                        with(sharedTransitionScope) {
-//                            val contentState = rememberSharedContentState(key = item.id)
-//
-//                            LaunchedEffect(isTransitionActive) {
-//                                if (isTransitionActive.not()) {
-//                                    selected = null
-//                                }
-//                            }
-//
-//                            Column(
-//                                modifier = Modifier.sharedElement(
-//                                    contentState,
-//                                    animatedVisibilityScope = animatedContentScope,
-//                                )
-//                            ) {
-//                                CardItem(
-//                                    modifier = Modifier
-//                                        .fillMaxWidth()
-//                                        .animateItem(),
-//                                    state = item,
-//                                    onClick = {
-//                                        onCardClick(item)
-//                                        selected = item.id
-//                                    }
-//                                )
-//                                val margin by animateDpAsState(
-//                                    if (selected == item.id) (cardInterval + LocalSpace.current.margin.compact) else 0.dp,
-//                                    tween(300)
-//                                )
-//                                Spacer(modifier = Modifier.height(margin))
-//                            }
-//                        }
-////                    }
-//                }
-//            }
         }
     }
 }
@@ -425,7 +418,8 @@ fun CardsScreenContentPreview() {
                 animatedContentScope = this@AnimatedContent,
                 state = CardsScreenUiState(emptyList()),
                 onAddCardClick = {},
-                onCardClick = {}
+                onCardClick = {},
+                onCardTagSelect = {}
             )
         }
     }

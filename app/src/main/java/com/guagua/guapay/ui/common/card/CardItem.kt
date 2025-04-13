@@ -35,9 +35,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.guagua.data.card.CardOrganization
+import com.guagua.data.card.CardTag
 import com.guagua.data.card.CardType
 import com.guagua.guapay.R
-import com.guagua.guapay.ui.theme.LocalColor
+import com.guagua.guapay.ui.common.extension.color
 import com.guagua.guapay.ui.theme.LocalTypography
 
 @Composable
@@ -54,7 +55,8 @@ fun CardItem(
             modifier = Modifier.fillMaxWidth(),
             name = state.name,
             type = state.type,
-            last4Digits = state.last4Digits
+            last4Digits = state.last4Digits,
+            tag = state.tag
         )
         Spacer(modifier = Modifier.weight(1f))
         Row(
@@ -86,13 +88,14 @@ fun CardTitleRow(
     name: String,
     type: CardType? = null,
     last4Digits: String? = null,
+    tag: CardTag
 ) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         RippleIndicator(
-            color = LocalColor.current.base.green._500,
+            color = tag.color(),
             size = 8.dp,
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -194,7 +197,8 @@ private fun CardItemPreview() {
             cvv = "123",
             type = CardType.PHYSICAL,
             owner = "John Doe",
-            organization = CardOrganization.VISA
+            organization = CardOrganization.VISA,
+            tag = CardTag.OTHER,
         )
     )
 }

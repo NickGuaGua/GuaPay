@@ -12,6 +12,7 @@ internal data class CardEntity(
     val expirationDate: String? = null,
     val cvv: String? = null,
     val owner: String? = null,
+    val tag: String? = null
 ) {
     companion object {
         fun from(bean: CardBean) = with(bean) {
@@ -22,6 +23,7 @@ internal data class CardEntity(
                 expirationDate = expirationDate,
                 cvv = cvv,
                 owner = owner,
+                tag = tag
             )
         }
     }

@@ -9,5 +9,6 @@ internal data class CardBean(
     val number: String? = null,
     val expirationDate: String? = null,
     val cvv: String? = null,
-    val owner: String? = null
+    val owner: String? = null,
+    val tag: String? = null
 )

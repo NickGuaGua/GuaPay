@@ -33,9 +33,8 @@ sealed class CardsParam {
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun CardsTabletContent(
-    modifier: Modifier = Modifier,
-    state: CardsScreenUiState,
+fun CardsTabletScreen(
+    modifier: Modifier = Modifier
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator<CardsParam?>(
         scaffoldDirective = calculatePaneScaffoldDirective(
@@ -50,10 +49,9 @@ fun CardsTabletContent(
         navigator = navigator,
         listPane = {
             AnimatedPane {
-                CardsScreenContent(
+                CardsScreen(
                     modifier = Modifier.fillMaxSize(),
-                    state = state,
-                    onAddCardClick = {
+                    navigateToAddCard = {
                         scope.launch {
                             navigator.navigateTo(
                                 pane = ListDetailPaneScaffoldRole.Detail,
@@ -61,11 +59,11 @@ fun CardsTabletContent(
                             )
                         }
                     },
-                    onCardClick = {
+                    navigateToCardDetail = {
                         scope.launch {
                             navigator.navigateTo(
                                 pane = ListDetailPaneScaffoldRole.Detail,
-                                contentKey = CardsParam.Card(it.id)
+                                contentKey = CardsParam.Card(it)
                             )
                         }
                     }
