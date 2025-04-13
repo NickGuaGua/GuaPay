@@ -174,6 +174,8 @@ sealed class AppPalette {
     abstract val tertiary: Color
     abstract val surface: Surface
 
+    fun isDarkMode() = this is Dark
+
     data class Base(
         val neutral: Palette,
         val green: Palette,

@@ -15,30 +15,6 @@ class AddCardViewModel(
 ) : ViewModel(),
     StateDelegator<AddCardScreenUiState> by StateDelegatorImpl(AddCardScreenUiState()),
     EventDelegator<AddCardScreenEvent> by EventDelegatorImpl() {
-    init {
-        setState {
-            it.copy(
-                cardName = it.cardName.copy(
-                    condition = { name -> name.isNotEmpty() }
-                ),
-                cardOwner = it.cardOwner.copy(
-                    condition = { owner -> owner.isNotEmpty() }
-                ),
-                cardNumber = it.cardNumber.copy(
-                    condition = { number -> number.isNotEmpty() }
-                ),
-                expireMonth = it.expireMonth.copy(
-                    condition = { month -> month.isNotEmpty() }
-                ),
-                expireYear = it.expireYear.copy(
-                    condition = { year -> year.isNotEmpty() }
-                ),
-                cvv = it.cvv.copy(
-                    condition = { cvv -> cvv.length == 3 }
-                )
-            )
-        }
-    }
 
     fun addCard() {
         setState { it.copy(isLoading = true) }
@@ -54,6 +30,7 @@ class AddCardViewModel(
                 )
             }.onSuccess {
                 addCardUseCase.invoke(it)
+                setState { AddCardScreenUiState() }
                 send(AddCardScreenEvent.Success)
             }.onFailure {
                 setState {

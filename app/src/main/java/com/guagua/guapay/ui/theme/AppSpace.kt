@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
 val LocalWindowSize = staticCompositionLocalOf<AppWindowSize> { AppWindowSize.Compact }
 
 enum class AppWindowSize {
-    Expand, Medium, Compact, Small;
+    Small, Compact, Medium, Expand;
 
     companion object {
         fun from(width: Dp): AppWindowSize {

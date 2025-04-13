@@ -13,11 +13,12 @@ import kotlinx.coroutines.flow.onEach
 
 class CardDetailViewModel(
     savedStateHandle: SavedStateHandle,
+    id: String?,
     getCardsUseCase: GetCardsUseCase
 ) : ViewModel(),
     StateDelegator<CardDetailScreenUiState> by StateDelegatorImpl(CardDetailScreenUiState()) {
     private val cardId =
-        savedStateHandle.get<String>(NavParam.CardId) ?: error("Card ID is required")
+        id ?: savedStateHandle.get<String>(NavParam.CardId) ?: error("Card ID is required")
 
     init {
         getCardsUseCase.flow(cardId)

@@ -7,7 +7,6 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -56,6 +55,8 @@ import com.guagua.guapay.ui.common.appbar.HomeAppBar
 import com.guagua.guapay.ui.common.button.PrimaryButton
 import com.guagua.guapay.ui.common.card.CardItem
 import com.guagua.guapay.ui.common.card.CardUiState
+import com.guagua.guapay.ui.common.extension.fadeIn
+import com.guagua.guapay.ui.common.extension.safeLet
 import com.guagua.guapay.ui.navigation.Screen
 import com.guagua.guapay.ui.theme.AppWindowSize
 import com.guagua.guapay.ui.theme.LocalColor
@@ -74,24 +75,33 @@ fun CardsScreen(
     onNavigation: (String) -> Unit = {},
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    CardsScreenContent(
-        modifier = modifier,
-        state = state,
-        sharedTransitionScope = sharedTransitionScope,
-        animatedContentScope = animatedContentScope,
-        onAddCardClick = { onNavigation(Screen.AddCard.route) },
-        onCardClick = { card ->
-            onNavigation(Screen.CardDetail.createRoute(card.id))
-        }
-    )
+    val windowSize = LocalWindowSize.current
+
+    if (windowSize.ordinal >= AppWindowSize.Medium.ordinal) {
+        CardsTabletContent(
+            modifier = modifier,
+            state = state
+        )
+    } else {
+        CardsScreenContent(
+            modifier = modifier,
+            state = state,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = animatedContentScope,
+            onAddCardClick = { onNavigation(Screen.AddCard.route) },
+            onCardClick = { card ->
+                onNavigation(Screen.CardDetail.createRoute(card.id))
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun CardsScreenContent(
+fun CardsScreenContent(
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     state: CardsScreenUiState,
     onAddCardClick: () -> Unit,
     onCardClick: (CardUiState) -> Unit,
@@ -231,8 +241,8 @@ private fun NoCardsContent(
 @Composable
 fun CardsContent(
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     cards: List<CardUiState>,
     onCardClick: (CardUiState) -> Unit = {},
     onAddCardClick: () -> Unit = {}
@@ -289,16 +299,16 @@ fun AddCreditCardFab(modifier: Modifier = Modifier) {
 @Composable
 private fun CardList(
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
     cards: List<CardUiState>,
     onCardClick: (CardUiState) -> Unit = {}
 ) {
     var selected by rememberSaveable { mutableStateOf<String?>(null) }
 
     val cardInterval = when (LocalWindowSize.current) {
-        AppWindowSize.Expand -> 230.dp
-        AppWindowSize.Medium -> 180.dp
+        AppWindowSize.Expand -> 80.dp
+        AppWindowSize.Medium -> 80.dp
         AppWindowSize.Compact -> 130.dp
         AppWindowSize.Small -> 80.dp
     }
@@ -312,73 +322,93 @@ private fun CardList(
         verticalArrangement = Arrangement.spacedBy(-cardInterval)
     ) {
         itemsIndexed(cards, key = { index, item -> item.id }) { index, item ->
-            AnimateListItem(
-                modifier = Modifier.graphicsLayer {
-                    rotationX = -3f
-                }
-            ) {
-                Column {
-                    with(sharedTransitionScope) {
-                        val contentState = rememberSharedContentState(key = item.id)
-
-                        LaunchedEffect(isTransitionActive) {
-                            if (isTransitionActive.not()) {
-                                selected = null
-                            }
-                        }
-
-                        Column(
-                            modifier = Modifier.sharedElement(
-                                contentState,
-                                animatedVisibilityScope = animatedContentScope,
-                            )
-                        ) {
-                            CardItem(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .animateItem(),
-                                state = item,
-                                onClick = {
-                                    onCardClick(item)
-                                    selected = item.id
-                                }
-                            )
-                            val margin by animateDpAsState(
-                                if (selected == item.id) (cardInterval + LocalSpace.current.margin.compact) else 0.dp,
-                                tween(300)
-                            )
-                            Spacer(modifier = Modifier.height(margin))
+            safeLet(sharedTransitionScope, animatedContentScope) { shareScope, animateScope ->
+                with(shareScope) {
+                    LaunchedEffect(isTransitionActive) {
+                        if (isTransitionActive.not()) {
+                            selected = null
                         }
                     }
 
+                    val contentState = rememberSharedContentState(key = item.id)
+
+                    val margin by animateDpAsState(
+                        if (selected == item.id) (cardInterval + LocalSpace.current.margin.compact) else 0.dp,
+                        tween(300)
+                    )
+
+                    CardItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = margin)
+                            .graphicsLayer { rotationX = -3f }
+                            .sharedElement(
+                                state = contentState,
+                                animatedVisibilityScope = animateScope,
+                            )
+                            .fadeIn(),
+                        state = item,
+                        onClick = {
+                            onCardClick(item)
+                            selected = item.id
+                        }
+                    )
                 }
+            } ?: run {
+                CardItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .graphicsLayer { rotationX = -3f }
+                        .fadeIn(),
+                    state = item,
+                    onClick = { onCardClick(item) }
+                )
             }
+
+
+//            AnimateListItem(
+//                modifier = Modifier.graphicsLayer {
+//                    rotationX = -3f
+//                }
+//            ) {
+//                Column {
+////                    safeLet(sharedTransitionScope, animatedContentScope) { shareScope, animateScope ->
+//                        with(sharedTransitionScope) {
+//                            val contentState = rememberSharedContentState(key = item.id)
+//
+//                            LaunchedEffect(isTransitionActive) {
+//                                if (isTransitionActive.not()) {
+//                                    selected = null
+//                                }
+//                            }
+//
+//                            Column(
+//                                modifier = Modifier.sharedElement(
+//                                    contentState,
+//                                    animatedVisibilityScope = animatedContentScope,
+//                                )
+//                            ) {
+//                                CardItem(
+//                                    modifier = Modifier
+//                                        .fillMaxWidth()
+//                                        .animateItem(),
+//                                    state = item,
+//                                    onClick = {
+//                                        onCardClick(item)
+//                                        selected = item.id
+//                                    }
+//                                )
+//                                val margin by animateDpAsState(
+//                                    if (selected == item.id) (cardInterval + LocalSpace.current.margin.compact) else 0.dp,
+//                                    tween(300)
+//                                )
+//                                Spacer(modifier = Modifier.height(margin))
+//                            }
+//                        }
+////                    }
+//                }
+//            }
         }
-    }
-}
-
-@Composable
-private fun AnimateListItem(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
-    val visible = remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        visible.value = true
-    }
-
-    val alpha by animateFloatAsState(if (visible.value) 1f else 0f, tween(500))
-    val offsetY by animateDpAsState(if (visible.value) 0.dp else 20.dp, tween(500))
-
-    Box(
-        modifier = modifier
-            .graphicsLayer {
-                this.alpha = alpha
-                this.translationY = offsetY.toPx()
-            }
-    ) {
-        content()
     }
 }
 

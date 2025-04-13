@@ -1,12 +1,12 @@
 package com.guagua.guapay.ui.cards.add
 
 data class AddCardScreenUiState(
-    val cardName: ValidateItem<String> = ValidateItem(""),
-    val cardOwner: ValidateItem<String> = ValidateItem(""),
-    val cardNumber: ValidateItem<String> = ValidateItem(""),
-    val expireMonth: ValidateItem<String> = ValidateItem(""),
-    val expireYear: ValidateItem<String> = ValidateItem(""),
-    val cvv: ValidateItem<String> = ValidateItem(""),
+    val cardName: ValidateItem<String> = ValidateItem("") { it.isNotEmpty() },
+    val cardOwner: ValidateItem<String> = ValidateItem("") { it.isNotEmpty() },
+    val cardNumber: ValidateItem<String> = ValidateItem("") { it.length == 16 },
+    val expireMonth: ValidateItem<String> = ValidateItem("") { it.isNotEmpty() },
+    val expireYear: ValidateItem<String> = ValidateItem("") { it.isNotEmpty() },
+    val cvv: ValidateItem<String> = ValidateItem("") { it.length == 3 },
     val isLoading: Boolean = false
 )
 

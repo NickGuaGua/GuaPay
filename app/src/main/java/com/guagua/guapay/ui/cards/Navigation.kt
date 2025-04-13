@@ -4,6 +4,7 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
@@ -23,7 +24,7 @@ fun NavGraphBuilder.cardGraph(
 ) {
     composable(Screen.Cards.route) {
         CardsScreen(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxSize(),
             sharedTransitionScope = sharedTransitionScope,
             animatedContentScope = this,
             onNavigation = onNavigation

@@ -31,29 +31,38 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.guagua.guapay.R
 import com.guagua.guapay.ui.common.appbar.DetailAppBar
+import com.guagua.guapay.ui.common.appbar.NavigationType
 import com.guagua.guapay.ui.common.button.GuaIconButton
 import com.guagua.guapay.ui.common.card.CardDetailItem
+import com.guagua.guapay.ui.common.extension.safeLet
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalSpace
 import com.guagua.guapay.ui.theme.LocalTypography
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CardDetailScreen(
     modifier: Modifier = Modifier,
-    viewModel: CardDetailViewModel = koinViewModel(),
-    sharedTransitionScope: SharedTransitionScope,
-    animatedContentScope: AnimatedContentScope,
+    cardId: String? = null,
+    viewModel: CardDetailViewModel = koinViewModel(
+        key = cardId,
+        parameters = { parametersOf(cardId) }
+    ),
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedContentScope: AnimatedContentScope? = null,
+    navigationType: NavigationType = NavigationType.Back,
     onBack: () -> Unit = {},
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     CardDetailScreenContent(
-        modifier = modifier,
+        modifier = modifier.statusBarsPadding(),
         sharedTransitionScope = sharedTransitionScope,
         animatedVisibilityScope = animatedContentScope,
         state = state,
+        navigationType = navigationType,
         onBack = onBack
     )
 }
@@ -62,38 +71,62 @@ fun CardDetailScreen(
 @Composable
 private fun CardDetailScreenContent(
     modifier: Modifier = Modifier,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope,
+    sharedTransitionScope: SharedTransitionScope? = null,
+    animatedVisibilityScope: AnimatedVisibilityScope? = null,
     state: CardDetailScreenUiState,
+    navigationType: NavigationType = NavigationType.Back,
     onBack: () -> Unit = {}
 ) {
-    Column(modifier = modifier.statusBarsPadding()) {
-        DetailAppBar(title = "Card Details") {
+    Column(modifier = modifier) {
+        DetailAppBar(
+            title = state.cardUiState?.name.orEmpty(),
+            navigationType = navigationType
+        ) {
             onBack()
         }
 
-        state.cardUiState?.let {
-            with(sharedTransitionScope) {
+        safeLet(sharedTransitionScope, animatedVisibilityScope) { shareScope, animateScope ->
+            with(shareScope) {
+                state.cardUiState?.let {
+                    CardDetailItem(
+                        modifier = Modifier
+                            .sharedElement(
+                                rememberSharedContentState(key = state.cardUiState.id),
+                                animatedVisibilityScope = animateScope
+                            )
+                            .fillMaxWidth()
+                            .aspectRatio(1.6f)
+                            .padding(horizontal = LocalSpace.current.margin.compact)
+                            .padding(top = 4.dp),
+                        state = state.cardUiState,
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    OwnerRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = LocalSpace.current.margin.compact),
+                        name = state.cardUiState.owner
+                    )
+                }
+            }
+        } ?: run {
+            state.cardUiState?.let {
                 CardDetailItem(
                     modifier = Modifier
-                        .sharedElement(
-                            rememberSharedContentState(key = state.cardUiState.id),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
                         .fillMaxWidth()
                         .aspectRatio(1.6f)
                         .padding(horizontal = LocalSpace.current.margin.compact)
                         .padding(top = 4.dp),
                     state = state.cardUiState,
                 )
+                Spacer(Modifier.height(20.dp))
+                OwnerRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = LocalSpace.current.margin.compact),
+                    name = state.cardUiState.owner
+                )
             }
-            Spacer(Modifier.height(20.dp))
-            OwnerRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = LocalSpace.current.margin.compact),
-                name = state.cardUiState.owner
-            )
         }
     }
 }

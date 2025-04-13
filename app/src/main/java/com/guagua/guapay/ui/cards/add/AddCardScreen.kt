@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.guagua.guapay.R
 import com.guagua.guapay.ui.common.appbar.DetailAppBar
+import com.guagua.guapay.ui.common.appbar.NavigationType
 import com.guagua.guapay.ui.common.button.PrimaryButton
 import com.guagua.guapay.ui.theme.AppColor
 import com.guagua.guapay.ui.theme.LocalColor
@@ -58,6 +59,7 @@ import java.util.Calendar
 fun AddCardScreen(
     modifier: Modifier = Modifier,
     viewModel: AddCardViewModel = koinViewModel(),
+    navigationType: NavigationType = NavigationType.Back,
     onBack: () -> Unit
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -75,6 +77,7 @@ fun AddCardScreen(
     AddCardScreenContent(
         modifier,
         state,
+        navigationType,
         onBack,
         viewModel::addCard,
         viewModel::setCardName,
@@ -90,6 +93,7 @@ fun AddCardScreen(
 private fun AddCardScreenContent(
     modifier: Modifier = Modifier,
     state: AddCardScreenUiState,
+    navigationType: NavigationType = NavigationType.Back,
     onBack: () -> Unit = {},
     onAddClick: () -> Unit = {},
     onCardNameChange: (String) -> Unit = {},
@@ -104,7 +108,10 @@ private fun AddCardScreenContent(
             .background(LocalColor.current.surface.background)
             .statusBarsPadding()
     ) {
-        DetailAppBar(title = stringResource(R.string.add_card_title)) {
+        DetailAppBar(
+            title = stringResource(R.string.add_card_title),
+            navigationType = navigationType
+        ) {
             onBack()
         }
 
@@ -139,7 +146,9 @@ private fun AddCardScreenContent(
                 isNecessary = true,
                 keyboardType = KeyboardType.Number,
                 visualTransformation = CreditCardVisualTransformation(),
-                onValueChange = { onCardNumberChange(it) }
+                onValueChange = {
+                    if (it.length <= 16) onCardNumberChange(it)
+                }
             )
             ExpireDateRow(
                 modifier = Modifier.fillMaxWidth(),

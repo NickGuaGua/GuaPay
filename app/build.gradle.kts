@@ -52,6 +52,8 @@ dependencies {
     implementation(libs.androidx.material.icon)
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation(libs.androidx.adaptive.android)
+    implementation(libs.androidx.adaptive.android.layout)
+    implementation(libs.androidx.adaptive.android.navigation)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.koin)
     testImplementation(libs.junit)
