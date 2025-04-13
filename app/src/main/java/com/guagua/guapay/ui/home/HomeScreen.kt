@@ -21,18 +21,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.navigation.compose.rememberNavController
 import com.guagua.guapay.ui.navigation.AppNavHost
+import com.guagua.guapay.ui.theme.AppWindowSize
 import com.guagua.guapay.ui.theme.LocalColor
 import com.guagua.guapay.ui.theme.LocalTypography
+import com.guagua.guapay.ui.theme.LocalWindowSize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
-    val pagerState = rememberPagerState { HomeTab.entries.size }
+    val pagerState =
+        rememberPagerState(initialPage = HomeTab.Cards.ordinal) { HomeTab.entries.size }
     val navController = HomeTab.entries.associateWith { rememberNavController() }
 
     Column(modifier = modifier.background(LocalColor.current.surface.background)) {
@@ -66,6 +70,13 @@ private fun HomeBottomNavigationBar(
     selectedIndex: Int,
     onSelect: (HomeTab) -> Unit = {}
 ) {
+    val windowSize = LocalWindowSize.current
+    val typography = if (windowSize == AppWindowSize.Small) {
+        LocalTypography.current.labelSmall.copy(
+            fontSize = 7.sp
+        )
+    } else LocalTypography.current.labelSmall
+
     NavigationBar(
         modifier = modifier,
         containerColor = LocalColor.current.surface.navigation,
@@ -85,7 +96,7 @@ private fun HomeBottomNavigationBar(
                 label = {
                     Text(
                         text = stringResource(homeTab.text()),
-                        style = LocalTypography.current.labelSmall,
+                        style = typography,
                         color = Color.White.copy(
                             if (selectedIndex == i) 1f else 0.4f
                         ),

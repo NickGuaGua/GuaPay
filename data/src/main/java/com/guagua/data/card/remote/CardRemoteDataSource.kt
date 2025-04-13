@@ -8,6 +8,7 @@ class CardRemoteDataSource {
 
     internal suspend fun getCards(): List<CardBean> {
         delay(1000) // Simulate network delay
+        return emptyList()
         return (1..100).map {
             CardBean(
                 id = it.toString(),

@@ -1,6 +1,7 @@
 package com.guagua.guapay.domain.di
 
 import com.guagua.guapay.domain.card.AddCardUseCase
+import com.guagua.guapay.domain.card.AddRandomCardUseCase
 import com.guagua.guapay.domain.card.GetCardsUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,7 @@ object DomainModuleProvider {
     val domainModules = module {
         factory { GetCardsUseCase(get(DomainQualifier.ioDispatcher), get()) }
         factory { AddCardUseCase(get(DomainQualifier.ioDispatcher), get()) }
+        factory { AddRandomCardUseCase(get()) }
     }
 
     val modules = listOf(

@@ -59,6 +59,7 @@ enum class CardOrganization {
 }
 
 enum class CardTag {
+    ALL,
     FOOD,
     TRANSPORT,
     SHOPPING,

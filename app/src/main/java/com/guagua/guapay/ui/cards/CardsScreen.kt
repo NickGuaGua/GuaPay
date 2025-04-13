@@ -87,6 +87,9 @@ fun CardsScreen(
         state = state,
         sharedTransitionScope = sharedTransitionScope,
         animatedContentScope = animatedContentScope,
+        onActionButtonClick = {
+            viewModel.addRandomCard()
+        },
         onAddCardClick = navigateToAddCard,
         onCardClick = { card ->
             navigateToCardDetail(card.id)
@@ -102,6 +105,7 @@ fun CardsScreenContent(
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedContentScope: AnimatedContentScope? = null,
     state: CardsScreenUiState,
+    onActionButtonClick: () -> Unit,
     onAddCardClick: () -> Unit,
     onCardClick: (CardUiState) -> Unit,
     onCardTagSelect: (CardTag) -> Unit
@@ -111,7 +115,8 @@ fun CardsScreenContent(
         modifier = modifier
     ) {
         HomeAppBar(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            onActionClick = onActionButtonClick
         )
         Column(
             modifier = Modifier.padding(
@@ -417,6 +422,7 @@ fun CardsScreenContentPreview() {
                 sharedTransitionScope = this@SharedTransitionLayout,
                 animatedContentScope = this@AnimatedContent,
                 state = CardsScreenUiState(emptyList()),
+                onActionButtonClick = {},
                 onAddCardClick = {},
                 onCardClick = {},
                 onCardTagSelect = {}

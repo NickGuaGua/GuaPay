@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.DropdownMenu
@@ -111,6 +113,7 @@ private fun AddCardScreenContent(
         modifier = modifier
             .background(LocalColor.current.surface.background)
             .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
     ) {
         DetailAppBar(
             title = stringResource(R.string.add_card_title),
@@ -121,7 +124,7 @@ private fun AddCardScreenContent(
 
         Column(
             modifier = Modifier.padding(LocalSpace.current.margin.compact),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(LocalSpace.current.margin.compact)
         ) {
             TextInput(
                 modifier = Modifier.fillMaxWidth(),
@@ -239,6 +242,9 @@ fun CardTagRow(
     tag: CardTag,
     onTagChange: (CardTag) -> Unit = {},
 ) {
+    val tags = remember {
+        CardTag.entries.minus(CardTag.ALL)
+    }
     Column(
         modifier = modifier
     ) {
@@ -252,7 +258,7 @@ fun CardTagRow(
             modifier = Modifier.fillMaxWidth(),
             selected = tag.text(),
             hint = "",
-            options = CardTag.entries.map { it.text() },
+            options = tags.map { it.text() },
             isError = false,
             onSelect = { onTagChange(CardTag.from(it)) }
         )

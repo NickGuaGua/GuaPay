@@ -27,7 +27,10 @@ import com.guagua.guapay.ui.theme.LocalSpace
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeAppBar(modifier: Modifier = Modifier) {
+fun HomeAppBar(
+    modifier: Modifier = Modifier,
+    onActionClick: () -> Unit = {}
+) {
     TopAppBar(
         modifier = modifier,
         title = {
@@ -52,7 +55,8 @@ fun HomeAppBar(modifier: Modifier = Modifier) {
                 paddingValues = PaddingValues(
                     horizontal = LocalSpace.current.margin.medium,
                     vertical = LocalSpace.current.margin.small
-                )
+                ),
+                onClick = onActionClick
             ) {
                 Box(
                     modifier = Modifier

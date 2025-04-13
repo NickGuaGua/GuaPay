@@ -57,7 +57,7 @@ fun CardDetailItem(
         CopyRow(
             modifier = Modifier.fillMaxWidth(),
             title = stringResource(R.string.card_number),
-            value = state.number
+            value = state.number.chunked(4).joinToString(" ")
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -168,7 +168,7 @@ private fun CardDetailItemPreview() {
         state = CardUiState(
             id = "1",
             name = "Card Name",
-            "1234 1234 1234 1234",
+            number = "1234123412341234",
             expirationDate = "12/25",
             cvv = "123",
             type = CardType.PHYSICAL,

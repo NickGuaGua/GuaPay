@@ -192,7 +192,7 @@ private fun CardItemPreview() {
         state = CardUiState(
             id = "1",
             name = "Card Name",
-            "1234 1234 1234 1234",
+            number = "1234123412341234",
             expirationDate = "12/25",
             cvv = "123",
             type = CardType.PHYSICAL,

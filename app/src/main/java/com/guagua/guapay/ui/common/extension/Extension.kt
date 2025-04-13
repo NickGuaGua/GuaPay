@@ -41,13 +41,14 @@ fun Modifier.fadeIn(): Modifier {
 @Composable
 fun CardTag.text(): String = when (this) {
     CardTag.OTHER -> stringResource(R.string.my_cards)
-    else -> this.name.replaceFirstChar { it.uppercase() }
+    else -> this.name.lowercase().replaceFirstChar { it.uppercase() }
 }
 
 @Composable
 fun CardTag.color(): Color {
     val palette = LocalColor.current.base
     return when (this) {
+        CardTag.ALL -> Color.Transparent
         CardTag.OTHER -> palette.blueGray._300
         CardTag.FOOD -> palette.green._300
         CardTag.TRANSPORT -> palette.red._300
