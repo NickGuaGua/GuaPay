@@ -249,7 +249,7 @@ fun CardTagRow(
         modifier = modifier
     ) {
         Text(
-            text = stringResource(R.string.input_card_expiration_date) + "*",
+            text = stringResource(R.string.input_card_tag) + "*",
             style = LocalTypography.current.titleSmall,
             color = LocalColor.current.text.primaryBlack,
         )

@@ -54,7 +54,7 @@ enum class CardOrganization {
     UNKNOWN;
 
     companion object {
-        fun from(value: String) = values().find { it.name == value } ?: UNKNOWN
+        fun from(value: String) = entries.find { it.name == value } ?: UNKNOWN
     }
 }
 
@@ -70,6 +70,6 @@ enum class CardTag {
     OTHER;
 
     companion object {
-        fun from(value: String) = entries.find { it.name == value } ?: OTHER
+        fun from(value: String) = entries.find { it.name.equals(value, true) } ?: OTHER
     }
 }

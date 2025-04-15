@@ -34,6 +34,7 @@
     <string name="input_card_expiration_year_hint">Year</string>
     <string name="input_card_cvv">Card Security Code</string>
     <string name="input_card_cvv_hint">Code</string>
+    <string name="input_card_tag">Tag</string>
     <string name="add_card">Add Card</string>
 
 </resources>
